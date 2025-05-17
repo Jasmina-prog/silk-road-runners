@@ -8,6 +8,7 @@ import { usePathname } from "next/navigation"
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const pathname = usePathname()
+  const isHomePage = pathname === "/"
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen)
@@ -25,26 +26,32 @@ export default function Header() {
   }
 
   return (
-    <header className="absolute top-0 z-50 w-full bg-transparent">
-      <div className="mx-auto max-w-6xl px-4 md:px-8">
+    <header className={`absolute top-0 z-50 w-full ${isHomePage ? "bg-transparent" : ""}`}>
+      <div
+        className={`mx-auto ${isHomePage ? "max-w-6xl px-4 md:px-8" : "max-w-6xl rounded-full bg-gray-50 px-4 py-2 mt-4"}`}
+      >
         <div className="flex h-20 items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center">
-            <div className="relative h-10 w-10">
-              <Image src="/logo.png" alt="Silk Road Runners Logo" fill className="object-contain" />
-            </div>
-          </Link>
+          {/* Logo - Only visible on home page or on mobile */}
+          {(isHomePage || !isHomePage) && (
+            <Link href="/" className={`flex items-center ${!isHomePage ? "md:invisible" : ""}`}>
+              <div className="relative h-10 w-10">
+                <Image src="/logo.png" alt="Silk Road Runners Logo" fill className="object-contain" />
+              </div>
+            </Link>
+          )}
 
-          {/* Center Logo (for second design) */}
-          {/* <div className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 transform md:block">
-            <Image
-              src="/images/logo-text.png"
+          {/* Center Logo - Only visible on non-home pages on desktop */}
+          <div
+            className={`${isHomePage ? "absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 transform md:block" : "absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform hidden md:block"}`}
+          >
+            {/* <Image
+              src="/footerlogo.png"
               alt="SILK ROAD RUNNERS."
               width={200}
               height={40}
               className="object-contain"
-            />
-          </div> */}
+            /> */}
+          </div>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:block">
@@ -54,7 +61,7 @@ export default function Header() {
                   <Link
                     href={link.href}
                     className={`text-sm font-medium transition-colors hover:text-[#D9A84E] ${
-                      isActive(link.href) ? "text-[#D9A84E]" : "text-white"
+                      isActive(link.href) ? "text-[#D9A84E]" : isHomePage ? "text-white" : "text-gray-700"
                     }`}
                   >
                     {link.label}
@@ -76,7 +83,7 @@ export default function Header() {
               strokeWidth="2"
               strokeLinecap="round"
               strokeLinejoin="round"
-              className="text-white"
+              className={isHomePage ? "text-white" : "text-gray-700"}
             >
               {isMenuOpen ? (
                 <>
@@ -103,7 +110,7 @@ export default function Header() {
                   <Link
                     href={link.href}
                     className={`block text-sm font-medium transition-colors hover:text-[#D9A84E] ${
-                      isActive(link.href) ? "text-[#D9A84E]" : "text-white"
+                      isActive(link.href) ? "text-[#D9A84E]" : isHomePage ? "text-white" : "text-gray-700"
                     }`}
                     onClick={() => setIsMenuOpen(false)}
                   >
